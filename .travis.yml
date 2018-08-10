@@ -18,18 +18,12 @@ matrix:
 before_script:
   - mkdir externals
   - cd externals
-  - svn co --quiet http://googletest.googlecode.com/svn/trunk gtest
-  - svn co --quiet http://llvm.org/svn/llvm-project/llvm/tags/RELEASE_33/final llvm
+  - svn co --quiet http://llvm.org/svn/llvm-project/llvm/tags/RELEASE_501/final llvm
   - cd llvm/tools/
-  - svn co --quiet http://llvm.org/svn/llvm-project/cfe/tags/RELEASE_33/final clang
+  - svn co --quiet http://llvm.org/svn/llvm-project/cfe/tags/RELEASE_501/final clang
   - cd ../../..
   - mkdir builds
   - cd builds
-  - mkdir gtest-debug
-  - cd gtest-debug
-  - cmake -DCMAKE_BUILD_TYPE=Debug ../../externals/gtest
-  - make -j3
-  - cd ..
   - mkdir llvm-release
   - cd llvm-release
   - cmake -DCMAKE_BUILD_TYPE=Release ../../externals/llvm
@@ -39,5 +33,5 @@ script:
   - cd builds
   - mkdir mozart2-release
   - cd mozart2-release
-  - cmake -DCMAKE_BUILD_TYPE=Release -DGTEST_SRC_DIR=../../externals/gtest -DGTEST_BUILD_DIR=../gtest-debug -DLLVM_SRC_DIR=../../externals/llvm -DLLVM_BUILD_DIR=../llvm-release ../..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_SRC_DIR=../../externals/llvm -DLLVM_BUILD_DIR=../llvm-release ../..
   - make -j3
