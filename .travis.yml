@@ -23,6 +23,6 @@ before_script:
   - apt list --installed
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
-  - cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_USE_STATIC_LIBS=OFF $SOURCES
+  - cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_USE_STATIC_LIBS=False -DLLVM_SRC_DIR=/usr/lib/llvm-3.8 -DLLVM_BUILD_DIR=/usr/lib/llvm-3.8  $SOURCES
   - make dist
   - make
