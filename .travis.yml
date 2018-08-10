@@ -9,20 +9,11 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.8
     packages:
-      - g++-5
       - tk-dev              # 8.6
       - emacs               # 24
       - clang-3.8-dev       # 3.8
       - llvm-3.8-dev        # 3.8
-      #- libboost-all-dev    # 1.58
-      - libboost-atomic-dev
-      - libboost-chrono-dev
-      - libboost-date-time-dev
-      - libboost-filesystem-dev
-      - libboost-program-options-dev
-      - libboost-random-dev
-      - libboost-system-dev
-      - libboost-thread-dev
+      - libboost-all-dev    # 1.58
 before_script:
   - apt list --installed
 script:
