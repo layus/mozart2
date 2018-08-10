@@ -8,7 +8,7 @@ addons:
     packages:
       - libboost-all-dev    # 1.58
       - tk-dev              # 8.6
-      - emacs-nox           # 24
+      - emacs               # 24
       - libclang-dev        # 3.8
       - llvm-dev            # 3.8
 before_script:
