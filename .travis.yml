@@ -1,15 +1,19 @@
 language: cpp
 compiler:
   - gcc
-dist: xenial
+dist: precise
 sudo: false
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.8
     packages:
+      - g++-5
       - tk-dev              # 8.6
       - emacs               # 24
-      - libclang-dev        # 3.8
-      - llvm-dev            # 3.8
+      - clang-3.8-dev       # 3.8
+      - llvm-3.8-dev        # 3.8
       #- libboost-all-dev    # 1.58
       - libboost-atomic-dev
       - libboost-chrono-dev
@@ -23,6 +27,6 @@ before_script:
   - apt list --installed
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
-  - cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-3.8 $SOURCES
+  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False $SOURCES
   - make dist VERBOSE=1
   - make VERBOSE=1
