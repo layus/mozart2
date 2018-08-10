@@ -6,17 +6,23 @@ sudo: false
 addons:
   apt:
     packages:
-      - libboost-all-dev    # 1.58
       - tk-dev              # 8.6
       - emacs               # 24
       - libclang-dev        # 3.8
       - llvm-dev            # 3.8
+      #- libboost-all-dev    # 1.58
+      - libboost-atomic-dev
+      - libboost-chrono-dev
+      - libboost-date-time-dev
+      - libboost-filesystem-dev
+      - libboost-program-options-dev
+      - libboost-random-dev
+      - libboost-system-dev
+      - libboost-thread-dev
 before_script:
   - apt list --installed
 script:
-  - export SOURCES=$(pwd)
-  - mkdir ../build
-  - cd ../build
+  - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
   - cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_USE_STATIC_LIBS=OFF $SOURCES
   - make dist
   - make
