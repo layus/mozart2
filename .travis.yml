@@ -1,37 +1,22 @@
 language: cpp
 compiler:
   - gcc
-matrix:
-  - os: linux
-    addons:
-      apt:
-        sources:
-          - ubuntu-toolchain-r-test
-          - george-edison55-precise-backports
-        packages:
-          - g++-8
-          - cmake 
-          - cmake-data
-          - libboost1.66-all-dev
-          - tk8.6-dev
-          - emacs25-nox
+dist: xenial
+sudo: false
+addons:
+  apt:
+    packages:
+      - libboost-all-dev    # 1.58
+      - tk-dev              # 8.6
+      - emacs-nox           # 24
+      - libclang-dev        # 3.8
+      - llvm-dev            # 3.8
 before_script:
-  - mkdir externals
-  - cd externals
-  - svn co --quiet http://llvm.org/svn/llvm-project/llvm/tags/RELEASE_501/final llvm
-  - cd llvm/tools/
-  - svn co --quiet http://llvm.org/svn/llvm-project/cfe/tags/RELEASE_501/final clang
-  - cd ../../..
-  - mkdir builds
-  - cd builds
-  - mkdir llvm-release
-  - cd llvm-release
-  - cmake -DCMAKE_BUILD_TYPE=Release ../../externals/llvm
-  - make -j3
-  - cd ../..
+  - apt list --installed
 script:
-  - cd builds
-  - mkdir mozart2-release
-  - cd mozart2-release
-  - cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_SRC_DIR=../../externals/llvm -DLLVM_BUILD_DIR=../llvm-release ../..
-  - make -j3
+  - export SOURCES=$(pwd)
+  - mkdir ../build
+  - cd ../build
+  - cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_USE_STATIC_LIBS=OFF $SOURCES
+  - make dist
+  - make
