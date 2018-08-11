@@ -9,13 +9,13 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.9
     packages:
-      - tcl-dev
+      - libboost-all-dev    # 1.58
+      - tcl-dev             # 8.6
       - tk-dev              # 8.6
       - emacs               # 24
       - clang-3.9
       - clang-3.9-dev
       - llvm-3.9-dev
-      - libboost-all-dev    # 1.58
 before_script:
   - apt list --installed
   # Fix clang cmake dirs
