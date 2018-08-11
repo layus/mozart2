@@ -7,17 +7,22 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.8
+      - llvm-toolchain-precise-3.9
     packages:
+      - tcl-dev
       - tk-dev              # 8.6
       - emacs               # 24
-      - clang-3.8-dev       # 3.8
-      - llvm-3.8-dev        # 3.8
+      - clang-3.9
+      - clang-3.9-dev
+      - llvm-3.9-dev
       - libboost-all-dev    # 1.58
 before_script:
   - apt list --installed
+  # Fix clang cmake dirs
+  - sudo -E ln -sn /usr/share/llvm-3.9/cmake /usr/lib/llvm-3.9/lib/cmake/clang
+
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
-  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False $SOURCES
+  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-3.9/lib/cmake $SOURCES
   - make dist VERBOSE=1
   - make VERBOSE=1
