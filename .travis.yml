@@ -5,23 +5,23 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty-4.0
+      - llvm-toolchain-trusty-3.8
     packages:
       - libboost-all-dev    # 1.58
       - tcl-dev             # 8.6
       - tk-dev              # 8.6
       - emacs               # 24
-      - clang-4.0
-      - libclang-4.0-dev
-      - llvm-4.0-dev
+      - clang-3.8
+      - clang-3.8-dev
+      - llvm-3.8-dev
 before_script:
   - apt list --installed
   # Fix clang cmake dirs
-  - sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang-4.0
-  - sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang
+  - sudo -E ln -sn /usr/share/llvm-3.8/cmake /usr/lib/llvm-3.8/lib/cmake/clang-3.8
+  - sudo -E ln -sn /usr/share/llvm-3.8/cmake /usr/lib/llvm-3.8/lib/cmake/clang
 
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
-  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-4.0/lib/cmake $SOURCES
+  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-3.8/lib/cmake $SOURCES
   - make dist VERBOSE=1
   - make VERBOSE=1
