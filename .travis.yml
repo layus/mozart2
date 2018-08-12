@@ -22,6 +22,8 @@ before_script:
 
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
-  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-3.8/lib/cmake $SOURCES
+  # Ok for clang >= 3.9
+  #- cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-3.8/lib/cmake $SOURCES
+  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=/usr/lib/llvm-3.8 $SOURCES
   - make dist VERBOSE=1
   - make VERBOSE=1
