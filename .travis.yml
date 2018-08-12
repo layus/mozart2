@@ -12,12 +12,13 @@ addons:
       - tk-dev              # 8.6
       - emacs               # 24
       - clang-4.0
-      - clang-4.0-dev
+      - libclang-4.0-dev
       - llvm-4.0-dev
 before_script:
   - apt list --installed
   # Fix clang cmake dirs
   - sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang-4.0
+  - sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang
 
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
