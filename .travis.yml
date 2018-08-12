@@ -17,8 +17,8 @@ addons:
 before_script:
   - apt list --installed
   # Fix clang cmake dirs
-  - sudo -E ln -sn /usr/share/llvm-3.8/cmake /usr/lib/llvm-3.8/lib/cmake/clang-3.8
-  - sudo -E ln -sn /usr/share/llvm-3.8/cmake /usr/lib/llvm-3.8/lib/cmake/clang
+  #- sudo -E ln -sn /usr/share/llvm-3.8/cmake /usr/lib/llvm-3.8/lib/cmake/clang-3.8
+  #- sudo -E ln -sn /usr/share/llvm-3.8/cmake /usr/lib/llvm-3.8/lib/cmake/clang
 
 script:
   - "export SOURCES=$(pwd) && mkdir ../build && cd ../build"
