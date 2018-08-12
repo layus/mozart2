@@ -13,8 +13,11 @@ set(LLVM_BUILD_DIR ${DEFAULT_LLVM_BUILD_DIR} CACHE PATH "Path to LLVM build (wit
 set(MOZART_GENERATOR_FLAGS "${DEFAULT_MOZART_GENERATOR_FLAGS}" CACHE STRING
     "Additional flags for the generator parser (clang)")
 
-add_compile_options(-Wall -std=c++0x)
+add_compile_options(-std=c++0x)
 
 add_subdirectory(generator)
+
+add_compile_options(-Wall)
+
 add_subdirectory(vm)
 add_subdirectory(boostenv)
