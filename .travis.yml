@@ -5,9 +5,7 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      #- llvm-toolchain-precise-4.0
-      - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
-        key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
+      - llvm-toolchain-trusty-4.0
     packages:
       - libboost-all-dev    # 1.58
       - tcl-dev             # 8.6
