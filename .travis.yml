@@ -29,6 +29,7 @@ matrix:
 
 before_script:
   - apt list --installed
+  - env
   # Fix clang cmake dirs
   - if [ $V == "3.9" ]; then  sudo -E ln -sn /usr/share/llvm-3.9/cmake /usr/lib/llvm-3.9/lib/cmake/clang;     fi
   - if [ $V == "4.0" ]; then  sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang;     fi
@@ -37,6 +38,6 @@ before_script:
 
 script:
   - export SOURCES=$(pwd) && mkdir ../build && cd ../build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PREFIX_PATH=$PREFIX $SOURCES
+  - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PROGRAM_PATH=/usr -DCMAKE_PREFIX_PATH=$PREFIX $SOURCES
   - make dist VERBOSE=1
   - make VERBOSE=1
