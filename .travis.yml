@@ -30,8 +30,6 @@ matrix:
 before_script:
   - apt list --installed
   - env
-  # clang-5.0.0 tampers with clang++ detection, and we want ours)
-  - export PATH="$(sed 's#:/usr/local/clang[^:]*:#:#g' <<< "$PATH")"
   # Fix clang cmake dirs
   - if [ $V == "3.9" ]; then  sudo -E ln -sn /usr/share/llvm-3.9/cmake /usr/lib/llvm-3.9/lib/cmake/clang;     fi
   - if [ $V == "4.0" ]; then  sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang;     fi
