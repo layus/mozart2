@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-[ $# -eq 2 ] || exit
-download_root=$(realpath -m "$1")
-install_root=$(realpath -m "$2")
+[ $# -lt 3 ] || exit
+download_root=$(realpath -m "${1-llvm-download}")
+install_root=$(realpath -m "${2-llvm-install}")
 
 v=4.0
 version=$v~svn305264-1~exp1_amd64.deb

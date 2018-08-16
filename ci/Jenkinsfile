@@ -11,20 +11,25 @@ pipeline {
     stages {
         stage ('Generate sources') {
             steps {
-                sh 'pwd && ls'
-
-                sh 'bash mozart2/ci/download_llvm.sh llvm-download llvm-install'
+                sh 'bash mozart2/ci/download_llvm.sh'
 
                 dir('build') {
-                    sh 'export CMAKE_FLAGS=(-DCMAKE_BUILD_TYPE=Release)'
-                    sh 'export CMAKE_FLAGS+=-DMOZART_BOOST_USE_STATIC_LIBS=False'
-                    sh 'export CMAKE_FLAGS+="-DCMAKE_PROGRAM_PATH=$WORKSPACE/llvm-install/usr/bin"'
-                    sh 'export CMAKE_FLAGS+="-DCMAKE_PREFIX_PATH=$WORKSPACE/llvm-install/usr/lib/llvm-4.0/lib/cmake"'
-                    sh 'cmake "$CMAKE_FLAGS[@]" $WORKSPACE/mozart2'
+                    sh """
+                        cmake "-DCMAKE_BUILD_TYPE=Release" \
+                            "-DMOZART_BOOST_USE_STATIC_LIBS=False" \
+                            "-DCMAKE_PROGRAM_PATH=$WORKSPACE/llvm-install/usr/bin" \
+                            "-DCMAKE_PREFIX_PATH=$WORKSPACE/llvm-install/usr/lib/llvm-4.0/lib/cmake"
+                            $WORKSPACE/mozart2
+                    """
                     sh 'make dist VERBOSE=1 -j4'
                 }
 
                 archiveArtifacts 'build/mozart2-*-Source.zip'
+            }
+            finally {
+                always {
+                    sh 'ls -1 | grep -v llvm-download | xargs rm -rf'
+                }
             }
         }
 
