@@ -13,10 +13,10 @@ pipeline {
             steps {
                 sh 'mkdir -p llvm/tools/clang llvm-install llvm-build'
                 dir ('llvm') {
-                    sh 'curl http://releases.llvm.org/3.8.1/llvm-3.8.1.src.tar.xz | tar xJvf - --strip-components=1'
+                    sh 'curl http://releases.llvm.org/3.8.1/llvm-3.8.1.src.tar.xz | tar xJf - --strip-components=1'
                     
                     dir ('tools/clang') {
-                        sh 'curl http://releases.llvm.org/3.8.1/cfe-3.8.1.src.tar.xz | tar xJvf - --strip-components=1'
+                        sh 'curl http://releases.llvm.org/3.8.1/cfe-3.8.1.src.tar.xz | tar xJf - --strip-components=1'
                         sh 'export PREFIX=$(pwd)'
                     }
                 }
