@@ -9,7 +9,7 @@ pipeline {
     }
 
     stages {
-        try {
+
         stage ('Generate sources') {
             steps {
                 sh 'bash mozart2/ci/download_llvm.sh'
@@ -26,14 +26,10 @@ pipeline {
                 }
 
                 archiveArtifacts 'build/mozart2-*-Source.zip'
+
+                sh 'ls -1 | grep -v llvm-download | xargs rm -rf'
             }
         }
-}
-            finally {
-                always {
-                    sh 'ls -1 | grep -v llvm-download | xargs rm -rf'
-                }
-            }
 
         stage ('Build') {
             steps {
