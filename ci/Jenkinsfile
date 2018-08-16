@@ -19,7 +19,7 @@ pipeline {
                         cmake "-DCMAKE_BUILD_TYPE=Release" \
                             "-DMOZART_BOOST_USE_STATIC_LIBS=False" \
                             "-DCMAKE_PROGRAM_PATH=$WORKSPACE/llvm-install/usr/bin" \
-                            "-DCMAKE_PREFIX_PATH=$WORKSPACE/llvm-install/usr/lib/llvm-4.0/lib/cmake"
+                            "-DCMAKE_PREFIX_PATH=$WORKSPACE/llvm-install/usr/lib/llvm-4.0/lib/cmake" \
                             $WORKSPACE/mozart2
                     """
                     sh 'make dist VERBOSE=1 -j4'
