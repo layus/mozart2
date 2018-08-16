@@ -26,12 +26,12 @@ pipeline {
 
                 archiveArtifacts 'build/mozart2-*-Source.zip'
             }
+        }
             finally {
                 always {
                     sh 'ls -1 | grep -v llvm-download | xargs rm -rf'
                 }
             }
-        }
 
         stage ('Build') {
             steps {
