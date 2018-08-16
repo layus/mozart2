@@ -4,13 +4,14 @@ pipeline {
 
     agent any
 
+    options { 
+        checkoutToSubdirectory('mozart2')
+    }
+
     stages {
         stage ('Generate sources') {
-            options { 
-                checkoutToSubdirectory('mozart2')
-            }
             steps {
-                checkout scm
+                sh 'pwd && ls'
 
                 sh 'bash mozart2/ci/download_llvm.sh llvm-download llvm-install'
 
