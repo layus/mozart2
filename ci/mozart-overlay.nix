@@ -10,8 +10,8 @@ with self;
     src = super.fetchFromGitHub {
       repo = "mozart2";
       owner = "mozart";
-      rev = "99139ce628cc4f8941fe267dd5b12df054f968d6";
-      sha256 = "0s8329fqbq5ali0jjd3brhhf63cmv9kiqax2kfhalkl3cbmwrlzm";
+      rev = "78c9e389d5127a3c80bce8be69c21be578b6af17";
+      sha256 = "1vwpphdq5jk60wvvvc39xah2bm9v884ykypa6dyjjrgl73izd5ay";
       fetchSubmodules = true;
     };
 
@@ -49,6 +49,8 @@ with self;
     fixupPhase = ''
       wrapProgram $out/bin/oz --set OZEMACS ${emacs}/bin/emacs
     '';
+
+    doCheck = true;
 
     buildInputs = [
       boost
