@@ -50,8 +50,8 @@ BoostVM::BoostVM(BoostEnvironment& environment,
   uuidGenerator(),
   portClosed(false),
   _asyncIONodeCount(0),
-  preemptionTimer(environment.io_service),
-  alarmTimer(environment.io_service),
+  preemptionTimer(nullptr),
+  alarmTimer(env.io_service),
   _terminationRequested(false),
   _terminationStatus(0),
   _terminationReason("normal"),
@@ -103,23 +103,31 @@ void BoostVM::run() {
   constexpr auto recInvokeAgainNow   = VirtualMachine::recInvokeAgainNow;
   constexpr auto recInvokeAgainLater = VirtualMachine::recInvokeAgainLater;
 
+  env.io_service.post([&] {
+      preemptionTimer = new boost::asio::deadline_timer(env.io_service);
+  });
+
   // The main loop that handles all interactions with the VM
   while (true) {
     // Make sure the VM knows the reference time before starting
     vm->setReferenceTime(env.getReferenceTime());
 
     // Setup the preemption timer
-    preemptionTimer.expires_from_now(boost::posix_time::millisec(1));
-    preemptionTimer.async_wait(boost::bind(
-      &BoostVM::onPreemptionTimerExpire,
-      this, boost::asio::placeholders::error));
+    env.io_service.post([&](){
+        preemptionTimer->expires_from_now(boost::posix_time::millisec(1));
+        preemptionTimer->async_wait(boost::bind(
+              &BoostVM::onPreemptionTimerExpire,
+              this, boost::asio::placeholders::error));
+    });
 
     // Run the VM
     auto nextInvokePair = vm->run();
     auto nextInvoke = nextInvokePair.first;
 
     // Stop the preemption timer
-    preemptionTimer.cancel();
+    env.io_service.post([&](){
+        preemptionTimer->expires_at(boost::posix_time::min_date_time);
+    });
 
     {
       // Acquire the lock that grants me access to
@@ -138,8 +146,9 @@ void BoostVM::run() {
         _vmEventsCallbacks.front()(*this);
         _vmEventsCallbacks.pop();
 
-        if (_terminationRequested)
+        if (_terminationRequested) {
           return; // Safe point to exit run()
+        }
 
         // That could have created work for the VM
         nextInvoke = recInvokeAgainNow;
@@ -170,18 +179,23 @@ void BoostVM::run() {
 
 // Called by the *IO thread*
 void BoostVM::onPreemptionTimerExpire(const boost::system::error_code& error) {
-  if (error != boost::asio::error::operation_aborted &&
-      !_terminationRequested) {
+  if (error == boost::asio::error::operation_aborted) {
+    // Timer was cancelled
+  } else if (_terminationRequested) {
+    // Termination was requested
+  } else if (preemptionTimer->expires_at() == boost::posix_time::min_date_time) {
+    // Timer was cancelled, but we missed it (race condition in io_service)
+  } else {
     // Preemption
     vm->setReferenceTime(env.getReferenceTime());
     vm->requestPreempt();
 
     // Reschedule
-    preemptionTimer.expires_at(
-      preemptionTimer.expires_at() + boost::posix_time::millisec(1));
-    preemptionTimer.async_wait(boost::bind(
-      &BoostVM::onPreemptionTimerExpire,
-      this, boost::asio::placeholders::error));
+    preemptionTimer->expires_at(
+        preemptionTimer->expires_at() + boost::posix_time::millisec(1));
+    preemptionTimer->async_wait(boost::bind(
+          &BoostVM::onPreemptionTimerExpire,
+          this, boost::asio::placeholders::error));
   }
 }
 
@@ -320,7 +334,22 @@ void BoostVM::terminate() {
   // not interact with the VM as we might have quitted run() brutally.
 
   // Ensure the timers are stopped
-  preemptionTimer.cancel();
+  auto& preemptionTimerCopy = preemptionTimer;
+  // We need a copy of preemptionTimer because we cannot capture 'this'.
+  // It may be deleted before the execution of the callback.
+  // For the same reason, we post on the io_context contained in the timer itself.
+  // All in all, this ensures that the timer will be safely deleted.
+  env.io_service.post([preemptionTimerCopy]{
+      preemptionTimerCopy->expires_at(boost::posix_time::min_date_time);
+      // We cannot delete the timer now because the onPreemptionTimerExpire handler
+      // may already be in the queue. So add a delete lambda to the queue.
+      // The lambda will execute after any leftover handlers on the timer and
+      // with the stopped timer.
+      preemptionTimerCopy->get_executor().context().post([preemptionTimerCopy] {
+          delete preemptionTimerCopy;
+      });
+  });
+  // Alarm timer is more simple, as we own it.
   alarmTimer.cancel();
 
   portClosed = true; // close VM port
