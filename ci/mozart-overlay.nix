@@ -7,13 +7,14 @@ with self;
     name = "mozart2-${version}";
     version = "2.0.0-beta.1";
 
-    src = super.fetchFromGitHub {
-      repo = "mozart2";
-      owner = "mozart";
-      rev = "78c9e389d5127a3c80bce8be69c21be578b6af17";
-      sha256 = "1vwpphdq5jk60wvvvc39xah2bm9v884ykypa6dyjjrgl73izd5ay";
-      fetchSubmodules = true;
-    };
+    src = if super.lib.inNixShell then null 
+      else super.fetchFromGitHub {
+        repo = "mozart2";
+        owner = "mozart";
+        rev = "78c9e389d5127a3c80bce8be69c21be578b6af17";
+        sha256 = "1vwpphdq5jk60wvvvc39xah2bm9v884ykypa6dyjjrgl73izd5ay";
+        fetchSubmodules = true;
+      };
 
     bootcompiler = fetchurl {
       url = "https://github.com/layus/mozart2/releases/download/v2.0.0-beta.1/bootcompiler.jar";
@@ -26,6 +27,9 @@ with self;
 
     nativeBuildInputs = [ cmake makeWrapper ];
 
+    preConfigure = ''
+      cmakeFlagsArray+=( -DCMAKE_CXX_FLAGS="-Wno-braced-scalar-init -fsanitize=thread -g" )
+    '';
     cmakeFlags = [ 
       "-DCMAKE_CXX_COMPILER=${llvmPackages.clang}/bin/clang++"
       "-DCMAKE_C_COMPILER=${llvmPackages.clang}/bin/clang"
@@ -43,7 +47,7 @@ with self;
       # We are building with clang, as nix does not support having clang and
       # gcc together as compilers and we need clang for the sources generation.
       # However, clang emits tons of warnings about gcc's atomic-base library.
-      "-DCMAKE_CXX_FLAGS=-Wno-braced-scalar-init"
+      #"-DCMAKE_CXX_FLAGS=-Wno-braced-scalar-init"
     ];
 
     fixupPhase = ''
@@ -66,8 +70,4 @@ with self;
 
   };
 }
-
-
-
-
 
