@@ -55,7 +55,6 @@ jobs:
         - $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD; RESULT=$?
         - if [[ ${RESULT} != 139 ]]; then echo "expected segfault and 139 exit but instead exited with ${RESULT}"; fi;
         - for i in $(find ./ -maxdepth 1 -name 'core*' -print); do gdb ./boosthost/emulator/ozemulator core* -ex "thread apply all bt" -ex "set pagination 0" -batch; done;
-
       deploy:
         provider: releases
         skip_cleanup: true
