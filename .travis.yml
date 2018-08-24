@@ -6,7 +6,7 @@ env:
 addons:
   apt:
     sources: [ "ubuntu-toolchain-r-test", "llvm-toolchain-trusty-4.0" ]
-    packages: [ "libboost-all-dev", "tcl-dev", "tk-dev", "emacs", "clang-4.0", "libclang-4.0-dev", "llvm-4.0-dev", "clang-format-4.0", "clang-tidy-4.0" ]
+    packages: [ "libboost-all-dev", "tcl-dev", "tk-dev", "emacs", "clang-4.0", "libclang-4.0-dev", "llvm-4.0-dev", "clang-format-4.0", "clang-tidy-4.0", "gdb", "apport" ]
 jobs:
   include:
     - stage: compiling and checking sources
@@ -30,16 +30,32 @@ jobs:
 
     - stage: compiling with pre-generated sources
       before_script:
+        # What is the current file size max for core files?
+        # It is usually 0, which means no core file will be dumped if there is a crash 
+        - ulimit -c
+        - ulimit -a -S
+        - ulimit -a -H
+        - cat /proc/sys/kernel/core_pattern
+        - cat /etc/default/apport
+        - service --status-all || true
+        - initctl list || true
+
         # Fix clang cmake dirs
         - if [ $V == 4.0 ]; then  sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang;     fi
         - if [ $V == 4.0 ]; then  sudo -E ln -sn /usr/share/llvm-4.0/cmake /usr/lib/llvm-4.0/lib/cmake/clang-4.0; fi
         - if [ $V == 4.0 ]; then  sudo -E ln -s  /usr/bin/*                /usr/lib/llvm-4.0/bin || true;         fi
       script:
         - export SOURCES=$(pwd) && mkdir ../build && cd ../build
-        - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PROGRAM_PATH=$BIN -DCMAKE_PREFIX_PATH=$PREFIX $SOURCES
+        - cmake -DCMAKE_BUILD_TYPE=Release -DMOZART_BOOST_USE_STATIC_LIBS=False -DCMAKE_PROGRAM_PATH=$BIN -DCMAKE_PREFIX_PATH=$PREFIX -DCMAKE_CXX_FLAGS="-g" $SOURCES
         - make dist VERBOSE=1
         - make VERBOSE=1
         - make check || true
+        - export CMD="./boosthost/emulator/ozemulator --home . platform-test/simple_runner.ozf platform-test/base/vm.ozf"
+        - ulimit -c unlimited -S
+        - $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD && $CMD; RESULT=$?
+        - if [[ ${RESULT} != 139 ]]; then echo "expected segfault and 139 exit but instead exited with ${RESULT}"; fi;
+        - for i in $(find ./ -maxdepth 1 -name 'core*' -print); do gdb ./boosthost/emulator/ozemulator core* -ex "thread apply all bt" -ex "set pagination 0" -batch; done;
+
       deploy:
         provider: releases
         skip_cleanup: true
