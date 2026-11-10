@@ -1,6 +1,6 @@
 # Boost library
 
-find_package(Boost 1.69 COMPONENTS random thread filesystem chrono REQUIRED)
+find_package(Boost 1.70 CONFIG COMPONENTS random thread filesystem chrono REQUIRED)
 
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})

@@ -19,12 +19,9 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  # The submodules and some subdirectories still declare very old minimum
-  # CMake versions, which CMake 4 rejects.
   CMAKE_COMMON: >-
     -G Ninja
     -DCMAKE_BUILD_TYPE=Release
-    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 jobs:
   # Full build: bootcompiler, VM, all .ozf, tests, Linux packages.

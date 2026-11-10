@@ -20,8 +20,9 @@ if(${MOZART_BOOST_USE_STATIC_LIBS})
 endif()
 
 # Boost.System is header-only since 1.69, and its stub library is gone in
-# recent releases, so it is not requested as a component.
-find_package(Boost 1.69 COMPONENTS
+# recent releases, so it is not requested as a component.  Boost ships its
+# own CMake package since 1.70; CMake 3.30 removed its FindBoost module.
+find_package(Boost 1.70 CONFIG COMPONENTS
   program_options random thread filesystem chrono REQUIRED)
 
 link_directories(${Boost_LIBRARY_DIRS})

@@ -31,7 +31,7 @@ bundle it. The installer does not include Emacs.
 
 On Linux:
 
-    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
     cmake --build build
     cmake --build build --target platform-test vmtest
     ctest --test-dir build --output-on-failure
