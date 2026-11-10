@@ -19,8 +19,10 @@ if(${MOZART_BOOST_USE_STATIC_LIBS})
   set(Boost_USE_STATIC_LIBS ON)
 endif()
 
-find_package(Boost COMPONENTS
-  program_options random system thread filesystem chrono REQUIRED)
+# Boost.System is header-only since 1.69, and its stub library is gone in
+# recent releases, so it is not requested as a component.
+find_package(Boost 1.69 COMPONENTS
+  program_options random thread filesystem chrono REQUIRED)
 
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
