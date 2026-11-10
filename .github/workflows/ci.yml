@@ -216,7 +216,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: C:/tcltk
-          key: tcltk-${{ env.TCL_VERSION }}-ucrt64-v1
+          key: tcltk-${{ env.TCL_VERSION }}-ucrt64-v2
 
       - name: Build Tcl/Tk
         if: steps.tcltk-cache.outputs.cache-hit != 'true'
@@ -227,6 +227,8 @@ jobs:
             curl -fsSL "https://github.com/tcltk/$p/archive/refs/tags/$tag.tar.gz" | tar xz
             mv "$p-$tag" "$p"
           done
+          # Third-party code: do not report its warnings.
+          export CFLAGS="-O2 -w"
           (cd tcl/win && ./configure --enable-64bit --prefix=/c/tcltk && make -j4 && make install)
           (cd tk/win && ./configure --enable-64bit --prefix=/c/tcltk --with-tcl=/tmp/tcltk/tcl/win \
              && make -j4 && make install)

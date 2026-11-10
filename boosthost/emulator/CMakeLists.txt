@@ -6,8 +6,9 @@ set(MOZART_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/../..")
 set(CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}")
 
 if(WIN32)
-  # Boost.Asio requires Windows 7 or later
-  add_definitions(-D_WIN32_WINNT=0x0601)
+  # Target Windows 10, as Boost's own CMake package does on MSYS2 (through
+  # Boost.Atomic).  All the code sharing Asio types must agree on it.
+  add_definitions(-D_WIN32_WINNT=0x0A00)
 endif()
 
 # Boost library

@@ -17,9 +17,10 @@ if(GMP_FOUND)
 endif()
 
 if(WIN32)
-  # Boost.Asio requires Windows 7 or later
-  add_definitions(-D_WIN32_WINNT=0x0601)
-  set(MOZART_GENERATOR_FLAGS "${MOZART_GENERATOR_FLAGS}" -D_WIN32_WINNT=0x0601)
+  # Target Windows 10, as Boost's own CMake package does on MSYS2 (through
+  # Boost.Atomic).  All the code sharing Asio types must agree on it.
+  add_definitions(-D_WIN32_WINNT=0x0A00)
+  set(MOZART_GENERATOR_FLAGS "${MOZART_GENERATOR_FLAGS}" -D_WIN32_WINNT=0x0A00)
 endif()
 
 # Mozart VM library

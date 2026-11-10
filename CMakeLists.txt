@@ -31,6 +31,20 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_local ${CMAKE_MODULE_PATH})
 include(MozartProperties)
 
+# Adds a third-party subdirectory without reporting its deprecated CMake
+# usage (CMake < 4 has no CMAKE_POLICY_VERSION_MINIMUM to cover old minimum
+# versions).  The user's CMAKE_WARN_DEPRECATED is restored afterwards.
+macro(mozart_add_third_party_subdirectory)
+  if(DEFINED CACHE{CMAKE_WARN_DEPRECATED})
+    set(_mozart_warn_deprecated "$CACHE{CMAKE_WARN_DEPRECATED}")
+  else()
+    set(_mozart_warn_deprecated ON)
+  endif()
+  set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
+  add_subdirectory(${ARGN})
+  set(CMAKE_WARN_DEPRECATED "${_mozart_warn_deprecated}" CACHE BOOL "" FORCE)
+endmacro()
+
 # Set variables that the submodules will need to find me
 set(MOZART_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(MOZART_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -113,7 +127,7 @@ add_subdirectory(boosthost)
 add_subdirectory(lib)
 add_subdirectory(opi)
 add_subdirectory(wish)
-add_subdirectory(stdlib)
+mozart_add_third_party_subdirectory(stdlib)
 add_subdirectory(platform-test EXCLUDE_FROM_ALL)
 
 # Add launcher and icons

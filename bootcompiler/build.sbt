@@ -11,7 +11,7 @@ libraryDependencies += "com.github.scopt" %% "scopt" % "4.1.0"
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
 
 // Work around a bug that prevents generating documentation
-unmanagedClasspath in Compile +=
+Compile / unmanagedClasspath +=
     Attributed.blank(new java.io.File("doesnotexist"))
 
 // Added during migration to the java 9 module system
