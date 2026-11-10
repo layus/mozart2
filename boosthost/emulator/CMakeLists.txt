@@ -3,11 +3,11 @@ set(MOZART_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 set(MOZART_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/../..")
 
 # Configure compiler
-set(CMAKE_CXX_FLAGS "-Wall -std=c++0x ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}")
 
 if(WIN32)
-  # Boost requires this
-  add_definitions(-D_WIN32_WINNT=0x0501)
+  # Boost.Asio requires Windows 7 or later
+  add_definitions(-D_WIN32_WINNT=0x0601)
 endif()
 
 # Boost library
@@ -32,12 +32,6 @@ include(FindGMP)
 if(GMP_FOUND)
   include_directories(${GMP_INCLUDE_DIR})
   add_definitions(-DUSE_GMP)
-endif()
-
-if(MINGW)
-  # Work around a bug in MinGW
-  string(REGEX REPLACE "(^| )-std=c\\+\\+0x($| )" " -std=gnu++0x "
-         CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
 # Mozart VM library
