@@ -32,12 +32,12 @@ jobs:
     name: Linux x86_64 (full build)
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0  # for `git describe`, which sets the version
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
@@ -50,7 +50,7 @@ jobs:
             emacs-nox dpkg-dev
 
       - name: Cache sbt
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.sbt
@@ -83,13 +83,13 @@ jobs:
           tar -cf ../mozart2-ozf.tar -T ../ozf-files.txt
           wc -l ../ozf-files.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mozart2-ozf
           path: mozart2-ozf.tar
           retention-days: 7
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: package-linux-x86_64
           path: |
@@ -115,12 +115,12 @@ jobs:
             cpack: TGZ
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4  # only needed to configure the project
+      - uses: actions/setup-java@v6  # only needed to configure the project
         with:
           distribution: temurin
           java-version: '17'
@@ -161,7 +161,7 @@ jobs:
       - name: Build the VM
         run: cmake --build build --target ozemulator ozwish vmtest
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: mozart2-ozf
 
@@ -174,7 +174,7 @@ jobs:
       - name: Package
         run: cd build && cpack -G "${{ matrix.cpack }}"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: package-${{ matrix.os }}
           path: |
@@ -194,12 +194,12 @@ jobs:
       TCL_VERSION: 8.6.16
       TCLTK_PREFIX: C:/tcltk
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4  # only needed to configure the project
+      - uses: actions/setup-java@v6  # only needed to configure the project
         with:
           distribution: temurin
           java-version: '17'
@@ -216,7 +216,7 @@ jobs:
       # it without dragging the whole MSYS2 tree along.
       - name: Cache Tcl/Tk
         id: tcltk-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: C:/tcltk
           key: tcltk-${{ env.TCL_VERSION }}-ucrt64-v1
@@ -254,7 +254,7 @@ jobs:
       - name: Build the VM and launchers
         run: cmake --build build --target ozemulator ozc oz ozwish vmtest
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: mozart2-ozf
 
@@ -270,7 +270,7 @@ jobs:
           iscc="$(command -v iscc || echo '/c/Program Files (x86)/Inno Setup 6/ISCC.exe')"
           "$iscc" build/distrib/windows/MozartSetup.iss
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: package-windows-x86_64
           path: build/mozart2-*.exe
@@ -283,7 +283,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: package-*
           merge-multiple: true
