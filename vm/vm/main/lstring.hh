@@ -37,21 +37,19 @@ namespace mut {
 
 // BaseLString -----------------------------------------------------------------
 
-namespace internal {
-  template <class C>
-  inline nativeint nullTerminatedLength(const C* str) {
-    return std::char_traits<C>::length(str);
-  }
+template <class C>
+inline nativeint lstringNullTerminatedLength(const C* str) {
+  return std::char_traits<C>::length(str);
+}
 
-  // std::char_traits<unsigned char> is not standard, libc++ deprecates it.
-  inline nativeint nullTerminatedLength(const unsigned char* str) {
-    return std::strlen(reinterpret_cast<const char*>(str));
-  }
+// std::char_traits<unsigned char> is not standard, libc++ deprecates it.
+inline nativeint lstringNullTerminatedLength(const unsigned char* str) {
+  return std::strlen(reinterpret_cast<const char*>(str));
 }
 
 template <class C>
 BaseLString<C>::BaseLString(const C* str)
-    : string(str), length(internal::nullTerminatedLength(str)) {}
+    : string(str), length(lstringNullTerminatedLength(str)) {}
 
 template <class C>
 BaseLString<C>::BaseLString(BaseLString&& other)
