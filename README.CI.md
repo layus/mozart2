@@ -59,3 +59,11 @@ Some protections are repository settings, not part of the workflow
 - *Workflow permissions*: choose *Read repository contents and packages
   permissions*, the default for workflows that do not set `permissions`;
 - optionally, *Require actions to be pinned to a full-length commit SHA*.
+
+Pull requests from forks run with a read-only token whatever their workflow
+says, so a change to the workflow gives them no more power than a change to
+the build scripts.  The danger is merging such a change.
+[.github/CODEOWNERS](.github/CODEOWNERS) makes the maintainers team the owner
+of `.github/`; with branch protection on `master` requiring a review from
+code owners (Settings > Branches), workflow changes cannot be merged without
+a maintainer's approval.  The team must be visible for GitHub to use it.

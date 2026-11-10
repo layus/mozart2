@@ -1,0 +1,7 @@
+# Changes to the CI configuration (workflows, Dependabot, this file) must be
+# approved by a maintainer before they can be merged: once merged, workflows
+# run with write access on pushes and tags.
+#
+# For this to take effect, the team must be visible (not secret), and branch
+# protection on master must require a review from code owners.
+/.github/ @mozart/mozart-oz-maintainers-team
