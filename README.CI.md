@@ -1,7 +1,7 @@
 # Mozart2 Continuous Integration
 
 CI runs on GitHub Actions, see [.github/workflows/ci.yml](.github/workflows/ci.yml).
-It runs on every push to `master`, on pull requests, and on tags.
+It runs on every push, on pull requests, and on tags.
 
 Compiled Oz code (`.ozf` files) does not depend on the platform, so the
 pipeline builds it only once:
