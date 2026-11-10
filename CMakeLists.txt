@@ -1,4 +1,10 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.10)
+
+# The stdlib and googletest submodules still declare ancient minimum versions,
+# which CMake >= 4 rejects outright.
+if(NOT DEFINED CMAKE_POLICY_VERSION_MINIMUM)
+  set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+endif()
 
 # This needs to be before "project(..)".
 if(NOT DEFINED CMAKE_BUILD_TYPE)
